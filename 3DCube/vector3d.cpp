@@ -53,7 +53,7 @@ void Vector3D::operator+=(Vector3D &right)
 	Coordinates.Z += right.Coordinates.Z;
 }
 
-void Vector3D::operator+=(Vector3D& right)
+void Vector3D::operator-=(Vector3D& right)
 {
 	Coordinates.X -= right.Coordinates.X;
 	Coordinates.Y -= right.Coordinates.Y;
