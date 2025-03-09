@@ -10,7 +10,7 @@ Cube::Cube(Vector3D center, double width)
 
 void Cube::_generateCubeEdges()
 {
-	int halfWidth = _width / 2;
+	double halfWidth = _width / 2.0;
 	// top vertices
 	Vector3D vertex1(
 		Center.Coordinates.X + halfWidth,

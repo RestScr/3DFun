@@ -11,7 +11,5 @@ private:
 	void _generateCubeEdges();
 
 public:
-	Vector3D Center;
-
 	Cube(Vector3D, double);
 };

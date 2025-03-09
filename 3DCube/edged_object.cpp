@@ -15,6 +15,15 @@ void EdgedObject::AddEdge(Edge edge)
 	_edges[_edgesAmount++] = edge;
 }
 
+void EdgedObject::MoveBy(Vector3D delta)
+{
+	Center += delta;
+	for (int i = 0; i < _edgesAmount; i++)
+	{
+		_edges[i].MoveBy(delta);
+	}
+}
+
 Edge* EdgedObject::Edges()
 {
 	return _edges;

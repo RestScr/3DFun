@@ -27,4 +27,29 @@ bool Edge::IsNullable()
 	return _nullable;
 }
 
+std::string Edge::ToString()
+{
+	std::string result = "Vertex{\n";
+	result += FirstVertex.ToString() + '\n';
+	result += SecondVertex.ToString() + '\n';
+	result += ThirdVertex.ToString() + '\n';
+	result += '}';
+
+	return result;
+}
+
+void Edge::MoveBy(Vector3D delta)
+{
+	FirstVertex += delta;
+	SecondVertex += delta;
+	ThirdVertex += delta;
+}
+
+void Edge::TransformBy(Matrix3D matrix)
+{
+	FirstVertex = matrix * FirstVertex;
+	SecondVertex = matrix * SecondVertex;
+	ThirdVertex = matrix * ThirdVertex;
+}
+
 

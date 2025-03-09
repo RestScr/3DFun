@@ -40,8 +40,7 @@ public:
 static class MatrixVariations
 {
 public:
-	static Matrix3D GetMatrixRotateRelativelyByX(double angle);
-	static Matrix3D GetMatrixRotateRelativelyByY(double angle);
-	static Matrix3D GetMatrixRotateRelativelyByZ(double angle);
-	
+	static Matrix3D GetMatrixRotateRelativelyByX(double);
+	static Matrix3D GetMatrixRotateRelativelyByY(double);
+	static Matrix3D GetMatrixRotateRelativelyByZ(double);
 };

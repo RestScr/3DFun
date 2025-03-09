@@ -1,6 +1,8 @@
 #pragma once
 
 #include "vector3d.h"
+#include "matrix3d.h"
+#include <string>
 
 class Edge
 {
@@ -17,4 +19,7 @@ public:
 		double, double, double,
 		double, double, double);
 	Edge(Vector3D, Vector3D, Vector3D);
+	void MoveBy(Vector3D);
+	void TransformBy(Matrix3D);
+	std::string ToString();
 };

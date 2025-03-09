@@ -77,13 +77,13 @@ Vector3D Matrix3D::operator*(Vector3D& right)
 		_matrix[0][1] * right.Coordinates.Y + 
 		_matrix[0][2] * right.Coordinates.Z;
 	result.Coordinates.Y = 
-		_matrix[0][0] * right.Coordinates.X +
-		_matrix[0][1] * right.Coordinates.Y + 
-		_matrix[0][2] * right.Coordinates.Z;
+		_matrix[1][0] * right.Coordinates.X +
+		_matrix[1][1] * right.Coordinates.Y + 
+		_matrix[1][2] * right.Coordinates.Z;
 	result.Coordinates.Z = 
-		_matrix[0][0] * right.Coordinates.X + 
-		_matrix[0][1] * right.Coordinates.Y + 
-		_matrix[0][2] * right.Coordinates.Z;
+		_matrix[2][0] * right.Coordinates.X + 
+		_matrix[2][1] * right.Coordinates.Y + 
+		_matrix[2][2] * right.Coordinates.Z;
 	
 	return result;
 }
