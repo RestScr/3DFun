@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="cube.cpp" />
     <ClCompile Include="edge.cpp" />
+    <ClCompile Include="edged_object.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="matrix3d.cpp" />
     <ClCompile Include="matrix3d.h" />
