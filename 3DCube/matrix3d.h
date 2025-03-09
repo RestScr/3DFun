@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <cmath>
 #include "vector3d.h"
 
 class Matrix3D {
@@ -29,4 +30,17 @@ public:
 	std::string ToString();
 
 	double Determinant();
+};
+
+/// <summary>
+/// Статический класс, который генерирует специальные матрицы
+/// преобразования
+/// </summary>
+static class MatrixVariations
+{
+public:
+	static Matrix3D GetMatrixRotateRelativelyByX(double angle);
+	static Matrix3D GetMatrixRotateRelativelyByY(double angle);
+	static Matrix3D GetMatrixRotateRelativelyByZ(double angle);
+
 };

@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cube.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="matrix3d.cpp" />
     <ClCompile Include="matrix3d.h" />
@@ -134,6 +135,9 @@
     <ClCompile Include="position3d.h" />
     <ClCompile Include="vector3d.cpp" />
     <ClCompile Include="vector3d.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cube.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
