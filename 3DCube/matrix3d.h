@@ -3,6 +3,7 @@
 #include <string>
 #include <cmath>
 #include "vector3d.h"
+#include "constants.h"
 
 class Matrix3D {
 private:
@@ -42,5 +43,5 @@ public:
 	static Matrix3D GetMatrixRotateRelativelyByX(double angle);
 	static Matrix3D GetMatrixRotateRelativelyByY(double angle);
 	static Matrix3D GetMatrixRotateRelativelyByZ(double angle);
-
+	
 };

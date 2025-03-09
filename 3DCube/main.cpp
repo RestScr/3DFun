@@ -2,6 +2,7 @@
 #include <windows.h>
 #include "matrix3d.h"
 #include "vector3d.h"
+#include "constants.h"
 
 #define SCREEN_WIDTH 120
 #define SCREEN_HEIGHT 30
@@ -62,11 +63,22 @@ void RenderLine(Vector3D& firstPoint, Vector3D& secondPoint)
 	{
 		dx = -1;
 	}
+	else if (deltaX == 0)
+	{
+		dx = 0;
+	}
 
 	if (deltaY < 0)
 	{
 		dy = -1;
 	}
+	else if (deltaY == 0)
+	{
+		dy = 0;
+	}
+
+	deltaX = abs(deltaX);
+	deltaY = abs(deltaY);
 
 	int x = max(0, min(SCREEN_WIDTH, x1));
 	int y = max(0, min(SCREEN_HEIGHT, y1));
@@ -102,8 +114,8 @@ int main()
 {
 	ScreenBuffer[(SCREEN_WIDTH + 1) * SCREEN_HEIGHT] = '\0';
 
-	Vector3D point1 = Vector3D(1, 5, 0);
-	Vector3D point2 = Vector3D(20, 20, 0);
+	Vector3D point1 = Vector3D(20, -20, 0);
+	Vector3D point2 = Vector3D(1, 5, 0);
 
 	while (1)
 	{

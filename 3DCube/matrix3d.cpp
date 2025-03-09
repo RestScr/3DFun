@@ -151,3 +151,39 @@ double Matrix3D::Determinant()
 
 	return firstComponent - secondComponent;
 }
+
+Matrix3D MatrixVariations::GetMatrixRotateRelativelyByX(double angle)
+{
+	double radians = angle / 180.0 * M_PI;
+	double matrix[3][3] = {
+		{1, 0, 0},
+		{0, cos(radians), -sin(radians)},
+		{0, sin(radians), cos(radians)}
+	};
+
+	return Matrix3D(matrix);
+}
+
+Matrix3D MatrixVariations::GetMatrixRotateRelativelyByY(double angle)
+{
+	double radians = angle / 180.0 * M_PI;
+	double matrix[3][3] = {
+		{cos(radians), 0, -sin(radians)},
+		{0, 1, 0},
+		{sin(radians), 0, cos(radians)}
+	};
+
+	return Matrix3D(matrix);
+}
+
+Matrix3D MatrixVariations::GetMatrixRotateRelativelyByZ(double angle)
+{
+	double radians = angle / 180.0 * M_PI;
+	double matrix[3][3] = {
+		{cos(radians), -sin(radians), 0},
+		{sin(radians), cos(angle), 0},
+		{0, 0, 1}
+	};
+
+	return Matrix3D(matrix);
+}
