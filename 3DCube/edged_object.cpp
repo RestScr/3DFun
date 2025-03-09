@@ -12,7 +12,7 @@ EdgedObject::EdgedObject(Edge edges[MAX_POLYGONS_PER_OBJECT]) {
 
 void EdgedObject::AddEdge(Edge edge)
 {
-	_edges[_edgesAmount - 1] = edge;
+	_edges[_edgesAmount++] = edge;
 }
 
 Edge* EdgedObject::Edges()

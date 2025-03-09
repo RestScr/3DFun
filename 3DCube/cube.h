@@ -2,13 +2,16 @@
 
 #include "matrix3d.h"
 #include "vector3d.h"
-#include "edge.h"
+#include "edged_object.h"
 
-class Cube
+class Cube : public EdgedObject
 {
 private:
 	double _width;
-	double _height;
+	void _generateCubeEdges();
+
 public:
-	Cube();
+	Vector3D Center;
+
+	Cube(Vector3D, double);
 };

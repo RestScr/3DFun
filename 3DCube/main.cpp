@@ -3,6 +3,7 @@
 #include "matrix3d.h"
 #include "vector3d.h"
 #include "constants.h"
+#include "edge.h"
 
 #define SCREEN_WIDTH 120
 #define SCREEN_HEIGHT 30
@@ -108,6 +109,11 @@ void RenderLine(Vector3D& firstPoint, Vector3D& secondPoint)
 void PrintScreenBuffer()
 {
 	std::cout << ScreenBuffer;
+}
+
+void ProjectEdgeToScreenBuffer(Edge edge)
+{
+
 }
 
 int main()
