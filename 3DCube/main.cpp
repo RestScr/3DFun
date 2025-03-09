@@ -114,13 +114,12 @@ int main()
 {
 	ScreenBuffer[(SCREEN_WIDTH + 1) * SCREEN_HEIGHT] = '\0';
 
-	Vector3D point1 = Vector3D(20, -20, 0);
-	Vector3D point2 = Vector3D(1, 5, 0);
-
 	while (1)
 	{
 		ClearScreenBuffer();
-		RenderLine(point1, point2);
+
+
+
 		PrintScreenBuffer();
 	};
 
