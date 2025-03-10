@@ -17,6 +17,7 @@ char ScreenBuffer[(SCREEN_WIDTH + 1) * SCREEN_HEIGHT + 1];
 
 double FOV = 60;
 Vector3D CameraPosition(0, 0, 0);
+Vector3D ScreenCoordinateSystemOffset(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0);
 Vector3D CameraNormal(0, 0, 1);
 
 /// <summary>
@@ -35,6 +36,9 @@ static Vector3D ProjectPointOnScreen(Vector3D& point)
 		pointRelativePosition.Coordinates.X * SCREEN_INGAME_WIDTH /
 		(pointRelativePosition.Coordinates.Z * tan(FOV));
 	projection.Coordinates.Z = SCREEN_INGAME_HEIGHT / tan(FOV);
+
+	projection.Coordinates.Y *= (-1);
+	projection += ScreenCoordinateSystemOffset;
 
 	return projection;
 }
@@ -162,12 +166,12 @@ int main()
 {
 	ScreenBuffer[(SCREEN_WIDTH + 1) * SCREEN_HEIGHT] = '\0';
 
-	Vector3D center(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 10);
+	Vector3D center(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 2);
 	double side = 10;
 	Cube cube(center, side);
 	int angle = 0;
 
-	int dx = 1;
+	double dx = 0.01;
 	
 	while (1)
 	{
@@ -189,12 +193,14 @@ int main()
 
 		if (cube.Center.Coordinates.X < 10)
 		{
-			dx = 1;
+			dx = 0.01;
 		}
 		else if (cube.Center.Coordinates.X > 90)
 		{
-			dx = -1;
+			dx = -0.01;
 		}
+
+		cube.MoveBy(Vector3D(dx, 0, 0));
 
 		DrawEdgedObject(cube);
 

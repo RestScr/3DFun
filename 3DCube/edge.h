@@ -1,6 +1,5 @@
 #pragma once
 
-#include "vector3d.h"
 #include "matrix3d.h"
 #include <string>
 

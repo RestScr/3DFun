@@ -23,7 +23,7 @@ public:
 	Matrix3D operator+(Matrix3D&);
 	Matrix3D operator*(double);
 	Matrix3D operator*(Matrix3D&);
-	Vector3D operator*(Vector3D&);
+	Vector3D operator*(Vector3D);
 	void operator+=(Matrix3D&);
 	void operator*=(Matrix3D&);
 	void operator*=(double);

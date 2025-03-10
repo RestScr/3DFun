@@ -23,7 +23,7 @@ double* Matrix3D::operator[](int index)
 	return _matrix[index];
 }
 
-Matrix3D Matrix3D::operator+ (Matrix3D& right)
+Matrix3D Matrix3D::operator+(Matrix3D& right)
 {
 	Matrix3D result;
 	for (int i = 0; i < 3; i++)
@@ -68,7 +68,7 @@ Matrix3D Matrix3D::operator*(Matrix3D& right)
 	return result;
 }
 
-Vector3D Matrix3D::operator*(Vector3D& right)
+Vector3D Matrix3D::operator*(Vector3D right)
 {
 	Vector3D result;
 
