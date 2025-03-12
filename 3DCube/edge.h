@@ -21,4 +21,5 @@ public:
 	void MoveBy(Vector3D);
 	void TransformBy(Matrix3D);
 	std::string ToString();
+	Vector3D Center();
 };

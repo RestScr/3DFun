@@ -1,5 +1,9 @@
 #include <iostream>
+#include <vector>
 #include <windows.h>
+#include <chrono>
+#include <thread>
+#include <algorithm>
 #include "matrix3d.h"
 #include "vector3d.h"
 #include "constants.h"
@@ -15,6 +19,8 @@ char ScreenBuffer[(SCREEN_WIDTH + 1) * SCREEN_HEIGHT + 1];
 #define SCREEN_INGAME_WIDTH 1.0
 #define SCREEN_INGAME_HEIGHT 1.0
 
+double Aspect = (double)SCREEN_HEIGHT / SCREEN_WIDTH;
+double SymbolAspect = 16.0 / 9.0;
 double FOV = 60;
 Vector3D CameraPosition(0, 0, 0);
 Vector3D ScreenCoordinateSystemOffset(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0);
@@ -29,16 +35,13 @@ static Vector3D ProjectPointOnScreen(Vector3D& point)
 	Vector3D pointRelativePosition = point - CameraPosition;
 	Vector3D projection;
 
-	projection.Coordinates.Y = 
-		pointRelativePosition.Coordinates.Y * SCREEN_INGAME_HEIGHT / 
-		(pointRelativePosition.Coordinates.Z * tan(FOV));
-	projection.Coordinates.X = 
-		pointRelativePosition.Coordinates.X * SCREEN_INGAME_WIDTH /
-		(pointRelativePosition.Coordinates.Z * tan(FOV));
-	projection.Coordinates.Z = SCREEN_INGAME_HEIGHT / tan(FOV);
+	projection.Coordinates.Z = SCREEN_HEIGHT / tan(FOV);
+	projection.Coordinates.Y = -pointRelativePosition.Coordinates.Y / pointRelativePosition.Coordinates.Z * projection.Coordinates.Z;
+	projection.Coordinates.X = pointRelativePosition.Coordinates.X / (pointRelativePosition.Coordinates.Z * Aspect * SymbolAspect) * projection.Coordinates.Z;
 
-	projection.Coordinates.Y *= (-1);
 	projection += ScreenCoordinateSystemOffset;
+
+	//std::cout << projection.ToString() << std::endl;
 
 	return projection;
 }
@@ -75,84 +78,106 @@ static void RenderLine(Vector3D& firstPoint, Vector3D& secondPoint)
 	int y1 = firstPoint.Coordinates.Y;
 	int y2 = secondPoint.Coordinates.Y;
 
-	int dx = 1;
-	int dy = 1;
-
 	int deltaX = x2 - x1;
 	int deltaY = y2 - y1;
 
-	if (deltaX < 0)
-	{
-		dx = -1;
-	}
-	else if (deltaX == 0)
-	{
-		dx = 0;
-	}
+	int absDeltaX = abs(deltaX);
+	int absDeltaY = abs(deltaY);
 
-	if (deltaY < 0)
-	{
-		dy = -1;
-	}
-	else if (deltaY == 0)
-	{
-		dy = 0;
-	}
-
-	deltaX = abs(deltaX);
-	deltaY = abs(deltaY);
-
-	int x = max(0, min(SCREEN_WIDTH, x1));
-	int y = max(0, min(SCREEN_HEIGHT, y1));
-
+	int startX = max(0, min(SCREEN_WIDTH, x1));
+	int startY = max(0, min(SCREEN_HEIGHT, y1));
 	int endX = max(0, min(SCREEN_WIDTH, x2));
 	int endY = max(0, min(SCREEN_HEIGHT, y2));
 
-	int d = 0;
+	int accretion = 0;
 
-	while (x != endX || y != endY)
-	{
-		if (d >= deltaX)
+	if (absDeltaX >= absDeltaY) {
+		int direction = (deltaY != 0) ? ((deltaY > 0) ? 1 : -1) : 0;
+		int y = y1;
+		for (int x = startX; (deltaX > 0) ? (x < endX) : (x > endX); (deltaX > 0) ? (x++) : (x--))
 		{
-			y += dy;
-			d -= deltaX;
-		}
-		else
-		{
-			x += dx;
-			d += deltaY;
-		}
+			if (accretion > absDeltaX)
+			{
+				y += direction;
+				accretion -= absDeltaX;
+			}
+			else
+			{
+				accretion += absDeltaY;
+			}
 
-		PutCharacter('+', x, y);
+			PutCharacter('#', x, y);
+		}
 	}
+	else
+	{
+		int direction = (deltaX != 0) ? ((deltaX > 0) ? 1 : -1) : 0;
+		int x = x1;
+		for (int y = startY; (deltaY > 0) ? (y < endY) : (y > endY); (deltaY > 0) ? (y++) : (y--))
+		{
+			if (accretion > absDeltaY)
+			{
+				x += direction;
+				accretion -= absDeltaY;
+			}
+			else
+			{
+				accretion += absDeltaX;
+			}
+
+			PutCharacter('#', x, y);
+		}
+	}
+
 }
 
-static void PrintScreenBuffer()
-{
-	std::cout << ScreenBuffer;
-}
-
-static void ProjectEdgeToScreenBuffer(Edge edge)
+static Edge ProjectEdge(Edge edge)
 {
 	Vector3D point1 = ProjectPointOnScreen(edge.FirstVertex);
 	Vector3D point2 = ProjectPointOnScreen(edge.SecondVertex);
 	Vector3D point3 = ProjectPointOnScreen(edge.ThirdVertex);
 
-	RenderLine(point1, point2);
-	RenderLine(point2, point3);
-	RenderLine(point3, point1);
+	return Edge(point1, point2, point3);
+}
+
+bool Comparator(Edge edge1, Edge edge2)
+{
+	return edge1.Center().Coordinates.Z > edge2.Center().Coordinates.Z;
 }
 
 static void DrawEdgedObject(EdgedObject edgedObject)
 {
+	std::vector<Edge> projectedEdges(edgedObject.EdgesAmount());
 	for (int i = 0; i < edgedObject.EdgesAmount(); i++)
 	{
-		//std::cout << edgedObject.Edges()[i].ToString() << std::endl;
-		ProjectEdgeToScreenBuffer(edgedObject.Edges()[i]);
+		projectedEdges[i] = ProjectEdge(edgedObject.Edges()[i]);
+	}
+
+	std::sort(projectedEdges.begin(), projectedEdges.end(), Comparator);
+
+	for (int i = 0; i < edgedObject.EdgesAmount(); i++)
+	{
+		Vector3D point1 = projectedEdges[i].FirstVertex;
+		Vector3D point2 = projectedEdges[i].SecondVertex;
+		Vector3D point3 = projectedEdges[i].ThirdVertex;
+
+		RenderLine(point1, point2);
+		RenderLine(point2, point3);
+		//RenderLine(point3, point1);
 	}
 }
 
-static void RotateCube(Cube &cube, double angle)
+static void RotateCubeByX(Cube &cube, double angle)
+{
+	for (int i = 0; i < 12; i++)
+	{
+		cube.Edges()[i].MoveBy(cube.Center * (-1));
+		cube.Edges()[i].TransformBy(MatrixVariations().GetMatrixRotateRelativelyByX(angle));
+		cube.Edges()[i].MoveBy(cube.Center);
+	}
+}
+
+static void RotateCubeByY(Cube& cube, double angle)
 {
 	for (int i = 0; i < 12; i++)
 	{
@@ -162,12 +187,17 @@ static void RotateCube(Cube &cube, double angle)
 	}
 }
 
+static void PrintScreen()
+{
+	std::cout << ScreenBuffer;
+}
+
 int main()
 {
 	ScreenBuffer[(SCREEN_WIDTH + 1) * SCREEN_HEIGHT] = '\0';
 
-	Vector3D center(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 2);
-	double side = 10;
+	Vector3D center(0, 0, 240);
+	double side = 50;
 	Cube cube(center, side);
 	int angle = 0;
 
@@ -177,35 +207,26 @@ int main()
 	{
 		ClearScreenBuffer();
 
-		if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
-		{
-			angle = (angle + 1) % 360;
-		}
-		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
-		{
-			angle--;
-			if (angle < 0)
-			{
-				angle = 360;
-			}
-		}
-		//RotateCube(cube, angle);
+		//std::cout << "--------------\n";
+		RotateCubeByX(cube, 1);
+		RotateCubeByY(cube, 1);
 
-		if (cube.Center.Coordinates.X < 10)
+		if (cube.Center.Coordinates.X < -50)
 		{
 			dx = 0.01;
 		}
-		else if (cube.Center.Coordinates.X > 90)
+		if (cube.Center.Coordinates.X > 50)
 		{
 			dx = -0.01;
 		}
-
-		cube.MoveBy(Vector3D(dx, 0, 0));
-
+		//cube.MoveBy(Vector3D(dx, 0, 0));
 		DrawEdgedObject(cube);
 
-		PrintScreenBuffer();
+		PrintScreen();
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	};
+	
 
 	return 0;
 }

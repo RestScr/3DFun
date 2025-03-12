@@ -52,4 +52,11 @@ void Edge::TransformBy(Matrix3D matrix)
 	ThirdVertex = matrix * ThirdVertex;
 }
 
+Vector3D Edge::Center()
+{
+	double x = (FirstVertex.Coordinates.X + SecondVertex.Coordinates.X + ThirdVertex.Coordinates.X) / 3.0;
+	double y = (FirstVertex.Coordinates.Y + SecondVertex.Coordinates.Y + ThirdVertex.Coordinates.Y) / 3.0;
+	double z = (FirstVertex.Coordinates.Z + SecondVertex.Coordinates.Z + ThirdVertex.Coordinates.Z) / 3.0;
 
+	return Vector3D(x, y, z);
+}
