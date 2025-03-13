@@ -181,7 +181,7 @@ Matrix3D MatrixVariations::GetMatrixRotateRelativelyByZ(double angle)
 	double radians = angle / 180.0 * M_PI;
 	double matrix[3][3] = {
 		{cos(radians), -sin(radians), 0},
-		{sin(radians), cos(angle), 0},
+		{sin(radians), cos(radians), 0},
 		{0, 0, 1}
 	};
 

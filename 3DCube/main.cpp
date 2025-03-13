@@ -179,6 +179,16 @@ static void RotateCubeByY(Cube& cube, double angle)
 	}
 }
 
+static void RotateCubeByZ(Cube& cube, double angle)
+{
+	for (int i = 0; i < 12; i++)
+	{
+		cube.Edges()[i].MoveBy(cube.Center * (-1));
+		cube.Edges()[i].TransformBy(MatrixVariations().GetMatrixRotateRelativelyByZ(angle));
+		cube.Edges()[i].MoveBy(cube.Center);
+	}
+}
+
 static void PrintScreen()
 {
 	std::cout << ScreenBuffer;
@@ -197,8 +207,9 @@ int main()
 		ClearScreenBuffer();
 
 		DrawEdgedObject(cube);
-		RotateCubeByY(cube, 1);
-		RotateCubeByX(cube, 1);
+		RotateCubeByZ(cube, 3);
+		//RotateCubeByY(cube, 1);
+		//RotateCubeByX(cube, 2);
 
 		PrintScreen();
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
