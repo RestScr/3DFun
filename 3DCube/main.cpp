@@ -71,61 +71,53 @@ static void PutCharacter(char character, int x, int y)
 /// <summary>
 /// Нарисовать линию на экране
 /// </summary>
-static void RenderLine(Vector3D& firstPoint, Vector3D& secondPoint)
+static void RenderLine(Vector3D firstPoint, Vector3D secondPoint)
 {
 	int x1 = firstPoint.Coordinates.X;
 	int x2 = secondPoint.Coordinates.X;
 	int y1 = firstPoint.Coordinates.Y;
 	int y2 = secondPoint.Coordinates.Y;
 
-	int deltaX = x2 - x1;
-	int deltaY = y2 - y1;
+	int startX = max(0, min(SCREEN_WIDTH, x1));
+	int startY = max(0, min(SCREEN_HEIGHT, y1));
+	int endX = max(0, min(SCREEN_WIDTH, x2));
+	int endY = max(0, min(SCREEN_HEIGHT, y2));;
+
+	int deltaX = endX - startX;
+	int deltaY = endY - startY;
 
 	int absDeltaX = abs(deltaX);
 	int absDeltaY = abs(deltaY);
 
-	int startX = max(0, min(SCREEN_WIDTH, x1));
-	int startY = max(0, min(SCREEN_HEIGHT, y1));
-	int endX = max(0, min(SCREEN_WIDTH, x2));
-	int endY = max(0, min(SCREEN_HEIGHT, y2));
-
 	int accretion = 0;
 
-	if (absDeltaX >= absDeltaY) {
-		int direction = (deltaY != 0) ? ((deltaY > 0) ? 1 : -1) : 0;
-		int y = y1;
-		for (int x = startX; (deltaX > 0) ? (x < endX) : (x > endX); (deltaX > 0) ? (x++) : (x--))
-		{
-			if (accretion > absDeltaX)
-			{
-				y += direction;
-				accretion -= absDeltaX;
-			}
-			else
-			{
-				accretion += absDeltaY;
-			}
-
-			PutCharacter('#', x, y);
-		}
-	}
-	else
-	{
+	if (absDeltaY >= absDeltaX) {
 		int direction = (deltaX != 0) ? ((deltaX > 0) ? 1 : -1) : 0;
-		int x = x1;
-		for (int y = startY; (deltaY > 0) ? (y < endY) : (y > endY); (deltaY > 0) ? (y++) : (y--))
+		int x = startX;
+		for (int y = startY; (deltaY > 0) ? (y <= endY) : (y >= endY); (deltaY > 0) ? (y++) : (y--))
 		{
-			if (accretion > absDeltaY)
+			PutCharacter('@', x, y);
+			accretion += absDeltaX;
+			if (accretion >= absDeltaY)
 			{
 				x += direction;
 				accretion -= absDeltaY;
 			}
-			else
+		}
+	}
+	else
+	{
+		int direction = (deltaY != 0) ? ((deltaY > 0) ? 1 : -1) : 0;
+		int y = startY;
+		for (int x = startX; (deltaX > 0) ? (x <= endX) : (x >= endX); (deltaX > 0) ? (x++) : (x--))
+		{
+			PutCharacter('@', x, y);
+			accretion += absDeltaY;
+			if (accretion >= absDeltaX)
 			{
-				accretion += absDeltaX;
+				y += direction;
+				accretion -= absDeltaX;
 			}
-
-			PutCharacter('#', x, y);
 		}
 	}
 
@@ -163,7 +155,7 @@ static void DrawEdgedObject(EdgedObject edgedObject)
 
 		RenderLine(point1, point2);
 		RenderLine(point2, point3);
-		//RenderLine(point3, point1);
+		RenderLine(point3, point1);
 	}
 }
 
@@ -199,34 +191,18 @@ int main()
 	Vector3D center(0, 0, 240);
 	double side = 50;
 	Cube cube(center, side);
-	int angle = 0;
-
-	double dx = 0.01;
 	
 	while (1)
 	{
 		ClearScreenBuffer();
 
-		//std::cout << "--------------\n";
-		RotateCubeByX(cube, 1);
-		RotateCubeByY(cube, 1);
-
-		if (cube.Center.Coordinates.X < -50)
-		{
-			dx = 0.01;
-		}
-		if (cube.Center.Coordinates.X > 50)
-		{
-			dx = -0.01;
-		}
-		//cube.MoveBy(Vector3D(dx, 0, 0));
 		DrawEdgedObject(cube);
+		RotateCubeByY(cube, 1);
+		RotateCubeByX(cube, 1);
 
 		PrintScreen();
-
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	};
-	
 
 	return 0;
 }
