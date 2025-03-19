@@ -39,6 +39,8 @@ static Vector3D ProjectPointOnScreen(Vector3D& point)
 	projection.Coordinates.Y = -pointRelativePosition.Coordinates.Y / pointRelativePosition.Coordinates.Z * projection.Coordinates.Z;
 	projection.Coordinates.X = pointRelativePosition.Coordinates.X / (pointRelativePosition.Coordinates.Z * Aspect * SymbolAspect) * projection.Coordinates.Z;
 
+	projection.Coordinates.Z = pointRelativePosition.Coordinates.Z;
+
 	projection += ScreenCoordinateSystemOffset;
 
 	//std::cout << projection.ToString() << std::endl;
@@ -207,9 +209,9 @@ int main()
 		ClearScreenBuffer();
 
 		DrawEdgedObject(cube);
-		RotateCubeByZ(cube, 3);
 		RotateCubeByY(cube, 1);
 		RotateCubeByX(cube, 2);
+		RotateCubeByZ(cube, 3);
 
 		PrintScreen();
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
