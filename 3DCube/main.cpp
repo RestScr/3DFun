@@ -208,8 +208,8 @@ int main()
 
 		DrawEdgedObject(cube);
 		RotateCubeByZ(cube, 3);
-		//RotateCubeByY(cube, 1);
-		//RotateCubeByX(cube, 2);
+		RotateCubeByY(cube, 1);
+		RotateCubeByX(cube, 2);
 
 		PrintScreen();
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
